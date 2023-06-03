@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.example.watchlist.entity.User;
+import com.example.watchlist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
