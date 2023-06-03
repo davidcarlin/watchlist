@@ -1,7 +1,10 @@
 package com.example.watchlist.controller;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
+import com.example.watchlist.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +17,11 @@ import com.example.watchlist.service.FilmService;
 public class FilmController {
 
     private final FilmService filmService;
+    private final UserService userService;
 
-    public FilmController(FilmService filmService) {
+    public FilmController(FilmService filmService, UserService userService) {
         this.filmService = filmService;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -61,6 +66,27 @@ public class FilmController {
         if (film != null) {
             filmService.deleteFilmById(id);
             return ResponseEntity.ok("Film with ID " + id + " has been deleted.");
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{filmId}/watchlist")
+    public ResponseEntity<?> addToWatchlist(@PathVariable Long filmId, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        Film film = filmService.getFilmById(filmId);
+        if (user != null && film != null) {
+            user.getWatchlist().add(film);
+            userService.saveUser(user);
+            return ResponseEntity.ok("Film added to watchlist");
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/watchlist")
+    public ResponseEntity<Set<Film>> getWatchlist(Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        if (user != null) {
+            return ResponseEntity.ok(user.getWatchlist());
         }
         return ResponseEntity.notFound().build();
     }
