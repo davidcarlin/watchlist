@@ -1,10 +1,11 @@
 package com.example.watchlist.service;
 
 import com.example.watchlist.entity.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     User saveUser(User user);
 
@@ -15,4 +16,7 @@ public interface UserService {
     void deleteUserById(Long id);
 
     User findByUsername(String name);
+
+    User createUser(String username, String password);
+
 }

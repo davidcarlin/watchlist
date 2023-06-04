@@ -91,4 +91,15 @@ public class FilmController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<User> registerUser(@RequestBody User user) {
+        // Perform validation on user input
+        // Check if user with the same username already exists
+        // Hash the user's password before saving it to the database
+        // Save the user using the UserService
+        User savedUser = userService.saveUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
+
 }
