@@ -8,6 +8,9 @@ import com.example.watchlist.entity.User;
 import com.example.watchlist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.watchlist.entity.Film;
@@ -72,8 +75,9 @@ public class FilmController {
     }
 
     @PostMapping("/{filmId}/watchlist")
-    public ResponseEntity<?> addToWatchlist(@PathVariable Long filmId, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> addToWatchlist(@PathVariable Long filmId, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.findByUsername(userDetails.getUsername());
         Film film = filmService.getFilmById(filmId);
         if (user != null && film != null) {
             user.getWatchlist().add(film);
@@ -82,6 +86,7 @@ public class FilmController {
         }
         return ResponseEntity.notFound().build();
     }
+
 
     @GetMapping("/watchlist")
     public ResponseEntity<Set<Film>> getWatchlist(Principal principal) {

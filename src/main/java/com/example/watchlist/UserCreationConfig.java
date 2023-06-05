@@ -1,5 +1,6 @@
 package com.example.watchlist;
 
+import com.example.watchlist.entity.User;
 import com.example.watchlist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -18,6 +19,12 @@ public class UserCreationConfig {
 
     @EventListener(ApplicationReadyEvent.class)
     public void createUser() {
-        userService.createUser("gude", "password1");
+        String username = "gude";
+        User existingUser = userService.findByUsername(username);
+        if (existingUser == null) {
+            userService.createUser(username, "password1");
+        }
     }
+
+
 }

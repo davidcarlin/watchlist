@@ -16,6 +16,7 @@ import com.example.watchlist.service.UserService;
 public class SecurityConfig {
 
     private UserDetailsService userDetailsService;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig() {}
 
@@ -28,7 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home").permitAll()
+                        .requestMatchers("/", "/home", "/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
